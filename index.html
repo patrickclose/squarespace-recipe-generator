@@ -25,20 +25,6 @@
             box-sizing: border-box;
         }
 
-        ol li::before {
-  content: counter(li-counter);
-  color: #59cbbe;
-  font-weight: bold;
-  width: 20px;
-  height: 20px;
-
-  border: 2px solid black;
-  border-radius: 50px;
-
-  padding: 4px;
-  margin: 10px;
-}
-
         body {
             background-color: var(--light-bg);
             color: var(--dark-text);
@@ -164,6 +150,7 @@
         .ingredient-item input, .instruction-item input {
             flex: 1;
             margin-right: 12px;
+            min-height: 38px; /* Ensure consistent height */
         }
 
         .btn {
@@ -210,10 +197,17 @@
             height: 38px;
             padding: 0;
             margin-left: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-remove:hover {
             background: #c0392b;
+        }
+
+        .btn-remove i {
+            margin: 0;
         }
 
         .template-selector {
@@ -389,10 +383,6 @@
             margin-top: 10px;
             font-style: italic;
             font-family: 'Lora', serif;
-        }
-
-        ol {
-            list-style-type: unset !important;
         }
 
         @media (max-width: 768px) {
@@ -871,7 +861,7 @@
       <h2 style="font-family: 'Playfair Display', serif; color: #2c3e50; font-size: 2rem; margin-bottom: 25px; padding-bottom: 12px; border-bottom: 2px solid #4a7c59;">Instructions</h2>
       <ol style="padding-left: 30px;">
         ${instructions.map((inst, index) => `<li style="margin-bottom: 25px; padding-left: 15px; position: relative; font-size: 1.1rem; line-height: 1.8;">
-          <span style="position: absolute; left: -35px; top: 0; width: 30px; height: 30px; background: #4a7c59; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1rem;">${index + 1}</span>
+          <span style="position: absolute; left: -35px; top: 0; width: 32px; height: 32px; background: #4a7c59; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1rem;">${index + 1}</span>
           ${inst}
         </li>`).join('')}
       </ol>
