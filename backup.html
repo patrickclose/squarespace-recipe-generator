@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Squarespace Recipe Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            color: #2c3e50;
+            margin: 0;
+            font-size: 3rem;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin: 10px 0 0 0;
+            font-size: 1.1rem;
+        }
+        
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-section, .preview-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            color: #2c3e50;
+            border-bottom: 3px solid #c19a6b;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-family: 'Lora', serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+            outline: none;
+            border-color: #c19a6b;
+        }
+        
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        
+        .ingredients-list, .instructions-list, .tips-list, .substitutions-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+        
+        .ingredient-item, .instruction-item, .tip-item, .substitution-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .ingredient-item input, .instruction-item input, .tip-item input, .substitution-item input {
+            flex: 1;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-add {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-add:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+        
+        .btn-remove {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 12px;
+        }
+        
+        .btn-remove:hover {
+            background: #c0392b;
+        }
+        
+        .btn-generate {
+            background: #3498db;
+            color: white;
+            font-size: 1.1rem;
+            padding: 15px 25px;
+        }
+        
+        .btn-generate:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-copy {
+            background: #c19a6b;
+            color: white;
+        }
+        
+        .btn-copy:hover {
+            background: #a67c52;
+            transform: translateY(-2px);
+        }
+        
+        .code-output {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 500px;
+            overflow-y: auto;
+            color: #2c3e50;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            color: #666;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 6px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-weight: 600;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-utensils"></i> Squarespace Recipe Generator</h1>
+            <p class="subtitle">Create elegant, professional recipes for your Squarespace site with toggleable unit conversion and recipe scaling.</p>
+        </header>
+        <div class="app-container">
+            <div class="form-section">
+                <h2 class="section-title"><i class="fas fa-info-circle"></i> Recipe Details</h2>
+                <div class="form-group">
+                    <label for="recipe-title">Recipe Title</label>
+                    <input type="text" id="recipe-title" placeholder="e.g., Classic Chocolate Chip Cookies" value="Herb-Crusted Rack of Lamb">
+                </div>
+                <div class="form-group">
+                    <label for="recipe-description">Description</label>
+                    <textarea id="recipe-description" placeholder="A brief description of your recipe...">A sophisticated dish featuring tender lamb coated in a fragrant herb crust, served with a rich red wine reduction. Perfect for special occasions.</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="prep-time">Prep Time (minutes)</label>
+                    <input type="number" id="prep-time" placeholder="e.g., 15" value="25">
+                </div>
+                <div class="form-group">
+                    <label for="cook-time">Cook Time (minutes)</label>
+                    <input type="number" id="cook-time" placeholder="e.g., 12" value="35">
+                </div>
+                <div class="form-group">
+                    <label for="servings">Servings</label>
+                    <input type="number" id="servings" placeholder="e.g., 24" value="4">
+                </div>
+                <h2 class="section-title"><i class="fas fa-list"></i> Ingredients</h2>
+                <ul class="ingredients-list" id="ingredients-list">
+                    <li class="ingredient-item">
+                        <input type="text" value="2 racks of lamb (8 bones each), frenched">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="ingredient-item">
+                        <input type="text" value="3 tablespoons Dijon mustard">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="ingredient-item">
+                        <input type="text" value="2 tablespoons fresh rosemary, finely chopped">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="ingredient-item">
+                        <input type="text" value="2 tablespoons fresh thyme leaves">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="ingredient-item">
+                        <input type="text" value="3 cloves garlic, minced">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="ingredient-item">
+                        <input type="text" value="2 tablespoons olive oil">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="ingredient-item">
+                        <input type="text" value="Salt and freshly ground black pepper">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="ingredient-item">
+                        <input type="text" value="1 cup red wine (Cabernet Sauvignon or Merlot)">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="ingredient-item">
+                        <input type="text" value="1 cup beef stock">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="ingredient-item">
+                        <input type="text" value="1 tablespoon butter">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                </ul>
+                <button class="btn btn-add" id="add-ingredient"><i class="fas fa-plus"></i> Add Ingredient</button>
+                <h2 class="section-title"><i class="fas fa-clipboard-list"></i> Instructions</h2>
+                <ul class="instructions-list" id="instructions-list">
+                    <li class="instruction-item">
+                        <input type="text" value="Preheat oven to 425°F. Season lamb generously with salt and pepper.">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="instruction-item">
+                        <input type="text" value="Heat olive oil in an oven-safe skillet over high heat. Sear lamb racks on all sides until golden brown, about 3 minutes per side.">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="instruction-item">
+                        <input type="text" value="Brush the top of each rack with Dijon mustard.">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="instruction-item">
+                        <input type="text" value="Combine rosemary, thyme, and garlic. Press the herb mixture firmly onto the mustard-coated surface of the lamb.">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="instruction-item">
+                        <input type="text" value="Transfer skillet to the oven and roast for 15-20 minutes for medium-rare, or until internal temperature reaches 130°F (54°C).">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="instruction-item">
+                        <input type="text" value="Remove lamb from oven and let rest for 10 minutes before slicing.">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="instruction-item">
+                        <input type="text" value="For the reduction, pour off excess fat from the skillet. Add red wine and scrape up browned bits.">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="instruction-item">
+                        <input type="text" value="Simmer until reduced by half, then add beef stock. Continue simmering until sauce coats the back of a spoon.">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="instruction-item">
+                        <input type="text" value="Remove from heat and whisk in butter until glossy. Season with salt and pepper to taste.">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="instruction-item">
+                        <input type="text" value="Slice lamb between bones and serve with red wine reduction drizzled on top.">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                </ul>
+                <button class="btn btn-add" id="add-instruction"><i class="fas fa-plus"></i> Add Instruction</button>
+                
+                <h2 class="section-title"><i class="fas fa-lightbulb"></i> Tips</h2>
+                <ul class="tips-list" id="tips-list">
+                    <li class="tip-item">
+                        <input type="text" value="For best results, let the lamb reach room temperature before cooking.">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="tip-item">
+                        <input type="text" value="Use a meat thermometer to ensure perfect doneness.">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="tip-item">
+                        <input type="text" value="Allow the lamb to rest for proper juice redistribution.">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                </ul>
+                <button class="btn btn-add" id="add-tip"><i class="fas fa-plus"></i> Add Tip</button>
+                
+                <h2 class="section-title"><i class="fas fa-exchange-alt"></i> Substitutions</h2>
+                <ul class="substitutions-list" id="substitutions-list">
+                    <li class="substitution-item">
+                        <input type="text" value="Dijon mustard → whole grain mustard or yellow mustard">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="substitution-item">
+                        <input type="text" value="Fresh rosemary → 1 tablespoon dried rosemary">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                    <li class="substitution-item">
+                        <input type="text" value="Red wine → beef broth with 1 tablespoon balsamic vinegar">
+                        <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                    </li>
+                </ul>
+                <button class="btn btn-add" id="add-substitution"><i class="fas fa-plus"></i> Add Substitution</button>
+            </div>
+            <div class="preview-section">
+                <div class="preview-container">
+                    <h2 class="section-title"><i class="fas fa-code"></i> Generated Code</h2>
+                    <p>Copy the code below and paste it into a Squarespace Code Block:</p>
+                    <div class="code-output" id="code-output">
+                        Your generated Squarespace code will appear here after you click "Generate Squarespace Code".
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-generate" id="generate-code">
+                            <i class="fas fa-code"></i> Generate Squarespace Code
+                        </button>
+                        <button class="btn btn-copy" id="copy-code">
+                            <i class="fas fa-copy"></i> Copy to Clipboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <p>Made with <i class="fas fa-heart" style="color: #2c3e50;"></i> for Culinary Professionals | Recipe Generator Tool</p>
+        </footer>
+    </div>
+    <div class="notification" id="notification">Code copied to clipboard!</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add ingredient button
+            document.getElementById('add-ingredient').addEventListener('click', function(e) {
+                e.preventDefault();
+                const list = document.getElementById('ingredients-list');
+                const newItem = document.createElement('li');
+                newItem.className = 'ingredient-item';
+                newItem.innerHTML = `
+                    <input type="text" placeholder="e.g., 2 cups all-purpose flour">
+                    <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                `;
+                list.appendChild(newItem);
+                addRemoveEvent(newItem.querySelector('.btn-remove'));
+            });
+            
+            // Add instruction button
+            document.getElementById('add-instruction').addEventListener('click', function(e) {
+                e.preventDefault();
+                const list = document.getElementById('instructions-list');
+                const newItem = document.createElement('li');
+                newItem.className = 'instruction-item';
+                newItem.innerHTML = `
+                    <input type="text" placeholder="e.g., Preheat oven to 375°F (190°C)">
+                    <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                `;
+                list.appendChild(newItem);
+                addRemoveEvent(newItem.querySelector('.btn-remove'));
+            });
+            
+            // Add tip button
+            document.getElementById('add-tip').addEventListener('click', function(e) {
+                e.preventDefault();
+                const list = document.getElementById('tips-list');
+                const newItem = document.createElement('li');
+                newItem.className = 'tip-item';
+                newItem.innerHTML = `
+                    <input type="text" placeholder="e.g., Tip for better results...">
+                    <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                `;
+                list.appendChild(newItem);
+                addRemoveEvent(newItem.querySelector('.btn-remove'));
+            });
+            
+            // Add substitution button
+            document.getElementById('add-substitution').addEventListener('click', function(e) {
+                e.preventDefault();
+                const list = document.getElementById('substitutions-list');
+                const newItem = document.createElement('li');
+                newItem.className = 'substitution-item';
+                newItem.innerHTML = `
+                    <input type="text" placeholder="e.g., Ingredient → Substitute">
+                    <button class="btn btn-remove"><i class="fas fa-times"></i></button>
+                `;
+                list.appendChild(newItem);
+                addRemoveEvent(newItem.querySelector('.btn-remove'));
+            });
+            
+            // Add remove event to existing buttons
+            document.querySelectorAll('.btn-remove').forEach(button => {
+                addRemoveEvent(button);
+            });
+            
+            // Generate code button
+            document.getElementById('generate-code').addEventListener('click', generateCode);
+            
+            // Copy code button
+            document.getElementById('copy-code').addEventListener('click', copyCode);
+            
+            // Generate initial code
+            setTimeout(generateCode, 500);
+        });
+        
+        function addRemoveEvent(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const item = this.closest('li');
+                if (item.parentNode.children.length > 1) {
+                    item.remove();
+                } else {
+                    // Clear the input instead of removing the last item
+                    item.querySelector('input').value = '';
+                }
+            });
+        }
+
+        function generateCode() {
+            // Get form values
+            var title = document.getElementById('recipe-title').value || 'Delicious Recipe';
+            var description = document.getElementById('recipe-description').value || 'A wonderful recipe to try.';
+            var prepTime = document.getElementById('prep-time').value || '15';
+            var cookTime = document.getElementById('cook-time').value || '30';
+            var servings = document.getElementById('servings').value || '4';
+            
+            // Get ingredients
+            var ingredients = [];
+            document.querySelectorAll('.ingredient-item input').forEach(function(input) {
+                if (input.value.trim()) {
+                    ingredients.push(input.value.trim());
+                }
+            });
+            
+            // Get instructions
+            var instructions = [];
+            document.querySelectorAll('.instruction-item input').forEach(function(input) {
+                if (input.value.trim()) {
+                    instructions.push(input.value.trim());
+                }
+            });
+            
+            // Get tips
+            var tips = [];
+            document.querySelectorAll('.tip-item input').forEach(function(input) {
+                if (input.value.trim()) {
+                    tips.push(input.value.trim());
+                }
+            });
+            
+            // Get substitutions
+            var substitutions = [];
+            document.querySelectorAll('.substitution-item input').forEach(function(input) {
+                if (input.value.trim()) {
+                    substitutions.push(input.value.trim());
+                }
+            });
+            
+            // Generate unique ID for this recipe
+            var recipeId = 'recipe-' + Date.now();
+            
+            // Properly escape HTML attributes
+            function escapeHtml(str) {
+                return str.replace(/&/g, '&amp;')
+                         .replace(/</g, '&lt;')
+                         .replace(/>/g, '&gt;')
+                         .replace(/"/g, '&quot;')
+                         .replace(/'/g, '&#39;');
+            }
+            
+            // Start building the HTML code using string concatenation
+            var code = '<!-- Elegant Black & White Squarespace Recipe Block -->\n';
+            code += '<div class="recipe-container" id="' + recipeId + '" style="font-family: \'Open Sans\', sans-serif; max-width: 800px; margin: 0 auto; padding: 30px; background: #ffffff; border: 2px solid #000000; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">\n';
+            code += '  <h1 style="font-family: \'Playfair Display\', serif; color: #000000; text-align: center; margin-bottom: 15px; font-size: 2.4rem; font-weight: 700; letter-spacing: -0.5px;">' + escapeHtml(title) + '</h1>\n';
+            code += '  \n';
+            code += '  <p style="text-align: center; color: #333333; font-style: italic; margin-bottom: 30px; font-family: \'Lora\', serif; font-size: 1.1rem; line-height: 1.6;">' + escapeHtml(description) + '</p>\n';
+            code += '  \n';
+            code += '  <div style="display: flex; justify-content: space-around; flex-wrap: wrap; margin-bottom: 35px; border-top: 2px solid #000000; border-bottom: 2px solid #000000; padding: 20px 0;">\n';
+            code += '    <div style="text-align: center; padding: 18px;">\n';
+            code += '      <div style="font-family: \'Montserrat\', sans-serif; font-weight: 600; color: #000000; font-size: 1rem; letter-spacing: 1px;">PREP TIME</div>\n';
+            code += '      <div id="prep-time-' + recipeId + '" style="font-family: \'Montserrat\', sans-serif; font-size: 1.3rem; font-weight: 500; margin-top: 5px; color: #333333;">' + prepTime + ' mins</div>\n';
+            code += '    </div>\n';
+            code += '    <div style="text-align: center; padding: 18px;">\n';
+            code += '      <div style="font-family: \'Montserrat\', sans-serif; font-weight: 600; color: #000000; font-size: 1rem; letter-spacing: 1px;">COOK TIME</div>\n';
+            code += '      <div id="cook-time-' + recipeId + '" style="font-family: \'Montserrat\', sans-serif; font-size: 1.3rem; font-weight: 500; margin-top: 5px; color: #333333;">' + cookTime + ' mins</div>\n';
+            code += '    </div>\n';
+            code += '    <div style="text-align: center; padding: 18px;">\n';
+            code += '      <div style="font-family: \'Montserrat\', sans-serif; font-weight: 600; color: #000000; font-size: 1rem; letter-spacing: 1px;">SERVINGS</div>\n';
+            code += '      <div style="font-family: \'Montserrat\', sans-serif; font-size: 1.3rem; font-weight: 500; margin-top: 5px; display: flex; align-items: center; justify-content: center; gap: 10px; color: #333333;">\n';
+            code += '        <span id="servings-' + recipeId + '">' + servings + '</span>\n';
+            code += '        <select id="scale-selector-' + recipeId + '" onchange="scaleRecipe(\'' + recipeId + '\', ' + prepTime + ', ' + cookTime + ', ' + servings + ')" style="padding: 4px 8px; border: 2px solid #000000; border-radius: 0; font-family: \'Montserrat\', sans-serif; font-size: 0.9rem; background: #ffffff; color: #000000;">\n';
+            code += '          <option value="0.5">0.5x</option>\n';
+            code += '          <option value="1" selected>1x</option>\n';
+            code += '          <option value="1.5">1.5x</option>\n';
+            code += '          <option value="2">2x</option>\n';
+            code += '          <option value="3">3x</option>\n';
+            code += '          <option value="4">4x</option>\n';
+            code += '        </select>\n';
+            code += '      </div>\n';
+            code += '    </div>\n';
+            code += '  </div>\n';
+            code += '  \n';
+            code += '  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 30px;">\n';
+            code += '    <div style="min-width: 250px;">\n';
+            code += '      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">\n';
+            code += '        <h2 style="font-family: \'Playfair Display\', serif; color: #000000; border-bottom: 3px solid #000000; padding-bottom: 8px; margin: 0; font-size: 1.8rem; font-weight: 600;">Ingredients</h2>\n';
+            code += '        <button id="unit-toggle-' + recipeId + '" onclick="toggleUnits(\'' + recipeId + '\')" style="background: #000000; color: #ffffff; border: none; margin-left: 8px; padding: 4x; cursor: pointer; font-family: \'Montserrat\', sans-serif; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.5px;">TOGGLE UNITS</button>\n';
+            code += '      </div>\n';
+            code += '      <ul id="ingredients-' + recipeId + '" style="list-style-type: none; padding-left: 0;">\n';
+            
+            // Add ingredients
+            for (var i = 0; i < ingredients.length; i++) {
+                var escaped = escapeHtml(ingredients[i]);
+                code += '        <li style="margin-bottom: 12px; padding-left: 25px; position: relative; font-family: \'Lora\', serif; font-size: 1.05rem; color: #333333; line-height: 1.5;" data-original="' + escaped + '">\n';
+                code += '          <span style="position: absolute; left: 0; top: 0; color: #000000; font-size: 1.2rem; font-weight: bold;">•</span> ' + escaped + '\n';
+                code += '        </li>\n';
+            }
+            
+            code += '      </ul>\n';
+            code += '    </div>\n';
+            code += '    \n';
+            code += '    <div style="min-width: 250px;">\n';
+            code += '      <h2 style="font-family: \'Playfair Display\', serif; color: #000000; border-bottom: 3px solid #000000; padding-bottom: 8px; margin-bottom: 20px; font-size: 1.8rem; font-weight: 600;">Instructions</h2>\n';
+            code += '      <ol style="padding-left: 25px; font-family: \'Lora\', serif; font-size: 1.05rem; color: #333333;">\n';
+            
+            // Add instructions
+            for (var j = 0; j < instructions.length; j++) {
+                var escaped = escapeHtml(instructions[j]);
+                code += '        <li style="margin-bottom: 18px; padding-left: 8px; line-height: 1.6;">' + escaped + '</li>\n';
+            }
+            
+            code += '      </ol>\n';
+            code += '    </div>\n';
+            code += '  </div>\n';
+            
+            // Add Tips section if there are tips
+            if (tips.length > 0) {
+                code += '  \n';
+                code += '  <div style="margin-bottom: 30px; border-top: 2px solid #000000; padding-top: 25px;">\n';
+                code += '    <h2 style="font-family: \'Playfair Display\', serif; color: #000000; border-bottom: 3px solid #000000; padding-bottom: 8px; margin-bottom: 20px; font-size: 1.8rem; font-weight: 600;">Chef\'s Tips</h2>\n';
+                code += '    <ul style="list-style-type: none; padding-left: 0; font-family: \'Lora\', serif; font-size: 1.05rem; color: #333333;">\n';
+                
+                for (var k = 0; k < tips.length; k++) {
+                    var escaped = escapeHtml(tips[k]);
+                    code += '      <li style="margin-bottom: 12px; padding-left: 25px; position: relative; line-height: 1.6;">\n';
+                    code += '        <span style="position: absolute; left: 0; top: 0; color: #000000; font-size: 1.2rem; font-weight: bold;">💡</span> ' + escaped + '\n';
+                    code += '      </li>\n';
+                }
+                
+                code += '    </ul>\n';
+                code += '  </div>\n';
+            }
+            
+            // Add Substitutions section if there are substitutions
+            if (substitutions.length > 0) {
+                code += '  \n';
+                code += '  <div style="margin-bottom: 30px; border-top: 2px solid #000000; padding-top: 25px;">\n';
+                code += '    <h2 style="font-family: \'Playfair Display\', serif; color: #000000; border-bottom: 3px solid #000000; padding-bottom: 8px; margin-bottom: 20px; font-size: 1.8rem; font-weight: 600;">Substitutions</h2>\n';
+                code += '    <ul style="list-style-type: none; padding-left: 0; font-family: \'Lora\', serif; font-size: 1.05rem; color: #333333;">\n';
+                
+                for (var l = 0; l < substitutions.length; l++) {
+                    var escaped = escapeHtml(substitutions[l]);
+                    code += '      <li style="margin-bottom: 12px; padding-left: 25px; position: relative; line-height: 1.6;">\n';
+                    code += '        <span style="position: absolute; left: 0; top: 0; color: #000000; font-size: 1.2rem; font-weight: bold;">⚡</span> ' + escaped + '\n';
+                    code += '      </li>\n';
+                }
+                
+                code += '    </ul>\n';
+                code += '  </div>\n';
+            }
+            
+            code += '  \n';
+            code += '</div>\n';
+            code += '\n';
+            code += '<script>\n';
+            code += 'var unitConversions' + recipeId + ' = {\n';
+            code += '  "cups": { "metric": "ml", "imperial": "cups" },\n';
+            code += '  "cup": { "metric": "ml", "imperial": "cup" },\n';
+            code += '  "tablespoons": { "metric": "ml", "imperial": "tablespoons" },\n';
+            code += '  "tablespoon": { "metric": "ml", "imperial": "tablespoon" },\n';
+            code += '  "tbsp": { "metric": "ml", "imperial": "tbsp" },\n';
+            code += '  "teaspoons": { "metric": "ml", "imperial": "teaspoons" },\n';
+            code += '  "teaspoon": { "metric": "ml", "imperial": "teaspoon" },\n';
+            code += '  "tsp": { "metric": "ml", "imperial": "tsp" },\n';
+            code += '  "pounds": { "metric": "g", "imperial": "pounds" },\n';
+            code += '  "pound": { "metric": "g", "imperial": "pound" },\n';
+            code += '  "lbs": { "metric": "g", "imperial": "lbs" },\n';
+            code += '  "ounces": { "metric": "g", "imperial": "ounces" },\n';
+            code += '  "ounce": { "metric": "g", "imperial": "ounce" },\n';
+            code += '  "oz": { "metric": "g", "imperial": "oz" }\n';
+            code += '};\n';
+            code += '\n';
+            code += 'function toggleUnits(id) {\n';
+            code += '  var ingredientsList = document.getElementById("ingredients-" + id);\n';
+            code += '  var items = ingredientsList.querySelectorAll("li");\n';
+            code += '  var toggleButton = document.getElementById("unit-toggle-" + id);\n';
+            code += '  \n';
+            code += '  var isCurrentlyUS = toggleButton.textContent === "US UNITS";\n';
+            code += '  \n';
+            code += '  for (var i = 0; i < items.length; i++) {\n';
+            code += '    var item = items[i];\n';
+            code += '    var originalText = item.getAttribute("data-original");\n';
+            code += '    var newText = originalText;\n';
+            code += '    \n';
+            code += '    if (isCurrentlyUS) {\n';
+            code += '      var units = Object.keys(unitConversions' + recipeId + ');\n';
+            code += '      for (var j = 0; j < units.length; j++) {\n';
+            code += '        var unit = units[j];\n';
+            code += '        var conversion = unitConversions' + recipeId + '[unit];\n';
+            code += '        var regex = new RegExp("(\\\\d+(\\\\.\\\\d+)?)\\\\s*" + unit, "gi");\n';
+            code += '        newText = newText.replace(regex, function(match, number) {\n';
+            code += '          var convertedValue = convertToMetric' + recipeId + '(number, unit);\n';
+            code += '          return convertedValue + " " + conversion.metric;\n';
+            code += '        });\n';
+            code += '      }\n';
+            code += '      toggleButton.textContent = "METRIC";\n';
+            code += '    } else {\n';
+            code += '      newText = originalText;\n';
+            code += '      toggleButton.textContent = "US UNITS";\n';
+            code += '    }\n';
+            code += '    \n';
+            code += '    item.innerHTML = "<span style=\\"position: absolute; left: 0; top: 0; color: #000000; font-size: 1.2rem; font-weight: bold;\\">•</span> " + newText;\n';
+            code += '  }\n';
+            code += '}\n';
+            code += '\n';
+            code += 'function convertToMetric' + recipeId + '(number, unit) {\n';
+            code += '  var num = parseFloat(number);\n';
+            code += '  switch(unit.toLowerCase()) {\n';
+            code += '    case "cups":\n';
+            code += '    case "cup":\n';
+            code += '      return Math.round(num * 240);\n';
+            code += '    case "tablespoons":\n';
+            code += '    case "tablespoon":\n';
+            code += '    case "tbsp":\n';
+            code += '      return Math.round(num * 15);\n';
+            code += '    case "teaspoons":\n';
+            code += '    case "teaspoon":\n';
+            code += '    case "tsp":\n';
+            code += '      return Math.round(num * 5);\n';
+            code += '    case "pounds":\n';
+            code += '    case "pound":\n';
+            code += '    case "lbs":\n';
+            code += '      return Math.round(num * 454);\n';
+            code += '    case "ounces":\n';
+            code += '    case "ounce":\n';
+            code += '    case "oz":\n';
+            code += '      return Math.round(num * 28);\n';
+            code += '    default:\n';
+            code += '      return num;\n';
+            code += '  }\n';
+            code += '}\n';
+            code += '\n';
+            code += 'function scaleRecipe(id, originalPrepTime, originalCookTime, originalServings) {\n';
+            code += '  var scaleFactor = parseFloat(document.getElementById("scale-selector-" + id).value);\n';
+            code += '  \n';
+            code += '  var servingsElement = document.getElementById("servings-" + id);\n';
+            code += '  if (servingsElement) {\n';
+            code += '    servingsElement.textContent = Math.round(originalServings * scaleFactor);\n';
+            code += '  }\n';
+            code += '  \n';
+            code += '  var prepTimeElement = document.getElementById("prep-time-" + id);\n';
+            code += '  if (prepTimeElement) {\n';
+            code += '    prepTimeElement.textContent = Math.round(originalPrepTime * scaleFactor) + " mins";\n';
+            code += '  }\n';
+            code += '  \n';
+            code += '  var cookTimeElement = document.getElementById("cook-time-" + id);\n';
+            code += '  if (cookTimeElement) {\n';
+            code += '    cookTimeElement.textContent = Math.round(originalCookTime * scaleFactor) + " mins";\n';
+            code += '  }\n';
+            code += '  \n';
+            code += '  var ingredientsList = document.getElementById("ingredients-" + id);\n';
+            code += '  if (ingredientsList) {\n';
+            code += '    var items = ingredientsList.querySelectorAll("li");\n';
+            code += '    for (var i = 0; i < items.length; i++) {\n';
+            code += '      var item = items[i];\n';
+            code += '      var originalText = item.getAttribute("data-original");\n';
+            code += '      var newText = originalText.replace(/(\\d+(\\.\\d+)?)/g, function(match) {\n';
+            code += '        return (parseFloat(match) * scaleFactor).toFixed(2).replace(/\\.?0+$/, "");\n';
+            code += '      });\n';
+            code += '      \n';
+            code += '      item.innerHTML = "<span style=\\"position: absolute; left: 0; top: 0; color: #000000; font-size: 1.2rem; font-weight: bold;\\">•</span> " + newText;\n';
+            code += '    }\n';
+            code += '  }\n';
+            code += '}\n';
+            code += '<\/script>';
+            
+            // Display the code
+            document.getElementById('code-output').textContent = code;
+        }
+        
+        function copyCode() {
+            const codeOutput = document.getElementById('code-output');
+            navigator.clipboard.writeText(codeOutput.textContent).then(() => {
+                const notification = document.getElementById('notification');
+                notification.classList.add('show');
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            });
+        }
+    </script>
+</body>
+</html>
