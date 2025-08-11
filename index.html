@@ -186,7 +186,39 @@
             <h2>Ingredients</h2>
             <ul id="ingredients-list">
                 <li class="list-item">
-                    <input type="text" placeholder="3 tablespoons Dijon mustard">
+                    <input type="text" placeholder="e.g., 2 cups all-purpose flour">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., 1 tsp baking soda">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., 1/2 tsp salt">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., 1 cup butter">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., 3/4 cup sugar">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., 3/4 cup brown sugar">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., 2 large eggs">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., 2 tsp vanilla">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., 2 cups chocolate chips">
                     <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
                 </li>
             </ul>
@@ -194,7 +226,39 @@
             <h2>Instructions</h2>
             <ul id="instructions-list">
                 <li class="list-item">
-                    <input type="text" placeholder="Preheat oven to 425°F. Season lamb generously with salt and pepper.">
+                    <input type="text" placeholder="e.g., Preheat oven to 375°F (190°C)">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Mix ingredients together">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Mix ingredients together">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Mix ingredients together">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Mix ingredients together">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Mix ingredients together">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Mix ingredients together">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Mix ingredients together">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Mix ingredients together">
                     <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
                 </li>
             </ul>
@@ -202,7 +266,19 @@
             <h2>Tips</h2>
             <ul id="tips-list">
                 <li class="list-item">
-                    <input type="text" placeholder="Let the lamb reach room temperature before cooking">
+                    <input type="text" placeholder="e.g., Use room temperature ingredients for best results">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Pro tip for better results">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Pro tip for better results">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Pro tip for better results">
                     <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
                 </li>
             </ul>
@@ -230,8 +306,7 @@
         const newItem = document.createElement('li');
         newItem.className = 'list-item';
         let placeholder = '';
-        if (type === 'ingredients') placeholder = 'e.g., 2 cups all-purpose flour';
-        else if (type === 'instructions') placeholder = 'e.g., Mix ingredients together';
+        if (type === 'instructions') placeholder = 'e.g., Mix ingredients together';
         else if (type === 'tips') placeholder = 'e.g., Pro tip for better results';
         newItem.innerHTML = `
             <input type="text" placeholder="${placeholder}">
@@ -239,6 +314,8 @@
         `;
         list.appendChild(newItem);
     }
+
+
 
     function removeItem(button) {
         const item = button.closest('li');
@@ -254,6 +331,44 @@
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+
+
+    function metricToUs(text) {
+        return text
+            .replace(/(\d*\.?\d+)\s*ml/gi, (match, qty) => {
+                const value = parseFloat(qty);
+                if (value >= 240) {
+                    const cups = value / 240;
+                    const fraction = toFraction(cups);
+                    return fraction ? fraction + ' cups' : (cups.toFixed(2).replace(/\.00$/, '') + ' cups');
+                } else if (value >= 15) {
+                    const tbsp = value / 15;
+                    const fraction = toFraction(tbsp);
+                    return fraction ? fraction + ' tbsp' : (tbsp.toFixed(1) + ' tbsp');
+                } else {
+                    const tsp = value / 5;
+                    const fraction = toFraction(tsp);
+                    return fraction ? fraction + ' tsp' : (tsp.toFixed(1) + ' tsp');
+                }
+            })
+            .replace(/(\d*\.?\d+)\s*grams?/gi, (match, qty) => {
+                const value = parseFloat(qty);
+                if (value >= 454) {
+                    const lbs = value / 454;
+                    const fraction = toFraction(lbs);
+                    return fraction ? fraction + ' lb' : (lbs.toFixed(2) + ' lb');
+                } else {
+                    const oz = value / 28;
+                    const fraction = toFraction(oz);
+                    return fraction ? fraction + ' oz' : (oz.toFixed(1) + ' oz');
+                }
+            })
+            .replace(/(\d+)°C/g, (match, c) => {
+                const f = Math.round((parseFloat(c) * 9 / 5 + 32) / 5) * 5;
+                return f + '°F';
+            });
     }
 
     function generateCode() {
@@ -276,7 +391,6 @@
         .filter(value => value);
 
     const recipeId = 'recipe-' + Date.now();
-    const checkboxId = `unit-toggle-${Date.now()}`;
     const scaleGroupId = `scale-group-${Date.now()}`;
 
     // Scaling factors
@@ -284,9 +398,10 @@
     const scaleLabels = ['x1', 'x1.5', 'x2', 'x3', 'x4'];
 
     // Pre-calculate scaled times and servings
+    // Note: Cook time stays the same, prep time scales moderately, servings scale linearly
     const scaledTimes = scales.map(scale => ({
-        prep: Math.round(prepTime * scale),
-        cook: Math.round(cookTime * scale),
+        prep: scale === 1 ? prepTime : Math.round(prepTime + (prepTime * 0.3 * (scale - 1))), // 30% increase per scale
+        cook: cookTime, // Cook time doesn't change with servings
         servings: Math.round(servings * scale)
     }));
 
@@ -298,24 +413,127 @@
             '1/4': 0.25, '1/2': 0.5, '3/4': 0.75,
             '1/3': 0.33, '2/3': 0.67
         };
+        
+        // Handle unicode fractions
         if (fractionMap[value]) return fractionMap[value];
+        
+        // Handle mixed numbers like "2 1/4"
+        const mixedMatch = value.match(/(\d+)\s+(\d+)\/(\d+)/);
+        if (mixedMatch) {
+            const whole = parseFloat(mixedMatch[1]);
+            const numerator = parseFloat(mixedMatch[2]);
+            const denominator = parseFloat(mixedMatch[3]);
+            if (!isNaN(whole) && !isNaN(numerator) && !isNaN(denominator) && denominator !== 0) {
+                return whole + (numerator / denominator);
+            }
+        }
+        
+        // Handle simple fractions like "3/4"
         const parts = value.split('/').map(Number);
-        if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1]) && parts[1] !== 0) {
             return parts[0] / parts[1];
         }
+        
+        // Handle simple numbers
         const num = parseFloat(value);
         return isNaN(num) ? 1 : num;
     }
 
-    // Scale ingredient quantities
+    // Smart scaling for instructions - scales appropriate quantities but preserves measurements, temperatures, cooking times, etc.
     function parseAndScaleIngredient(text, scale) {
-        return text.replace(/(\d*\.?\d+|[¼½¾⅓⅔]|[\\d\\/]+)/g, qty => {
-            const decimal = parseFraction(qty);
-            const scaled = decimal * scale;
-            // Convert back to simplified fraction if possible
-            const fraction = toFraction(scaled);
-            return fraction || scaled.toFixed(2).replace(/\.00$/, '');
+        const protectedItems = new Map();
+        let counter = 0;
+        
+        // Protect temperatures
+        let protectedText = text.replace(/\b(\d+(?:\.\d+)?)\s*(?:°[FC]|degrees?\s*[FC]?|[FC])\b/gi, (match) => {
+            const placeholder = `__TEMP_${counter}__`;
+            protectedItems.set(placeholder, match);
+            counter++;
+            return placeholder;
         });
+        
+        // Protect physical measurements - more comprehensive patterns
+        // Pattern 1: Fractions with measurements (1/8 inch, 2 1/4 inches)  
+        protectedText = protectedText.replace(/\b(\d+(?:\s+\d+\/\d+|\.\d+)?|\d+\/\d+)\s+(inch(?:es)?|cm|mm|feet?|yards?)\b(?:\s+(?:apart|thick|wide|deep|diameter|across|long|high))?/gi, (match) => {
+            const placeholder = `__MEASURE_${counter}__`;
+            protectedItems.set(placeholder, match);
+            counter++;
+            return placeholder;
+        });
+        
+        // Pattern 2: Hyphenated sizes (9-inch, 12-inch)
+        protectedText = protectedText.replace(/\b(\d+(?:\.\d+)?)-(?:inch|cm|mm)\b/gi, (match) => {
+            const placeholder = `__SIZE_${counter}__`;
+            protectedItems.set(placeholder, match);
+            counter++;
+            return placeholder;
+        });
+        
+        // Protect ALL time references - comprehensive patterns
+        // Format: "25 minutes", "2 hours", "25-30 mins", "2.5 hours", "25min", etc.
+        protectedText = protectedText.replace(/\b(\d+(?:\.\d+|½|¼|¾)?(?:\s*-\s*\d+(?:\.\d+|½|¼|¾)?)?)\s*(?:minutes?|mins?|hours?|hrs?|seconds?|secs?)\b/gi, (match) => {
+            const placeholder = `__TIME_${counter}__`;
+            protectedItems.set(placeholder, match);
+            counter++;
+            return placeholder;
+        });
+        
+        // Protect heat/temperature descriptions
+        protectedText = protectedText.replace(/\b(?:low|medium|high|very low|very high)\s+(?:heat|temperature|temp)\b/gi, (match) => {
+            const placeholder = `__HEAT_${counter}__`;
+            protectedItems.set(placeholder, match);
+            counter++;
+            return placeholder;
+        });
+        
+        // Protect equipment settings and levels
+        protectedText = protectedText.replace(/\b(?:heat\s+level|speed|setting|level|rack\s+position|position)\s+(\d+)/gi, (match) => {
+            const placeholder = `__SETTING_${counter}__`;
+            protectedItems.set(placeholder, match);
+            counter++;
+            return placeholder;
+        });
+        
+        // Protect ratios and percentages
+        protectedText = protectedText.replace(/\b(\d+(?:\.\d+)?:\d+(?:\.\d+)?|\d+\s+to\s+\d+|\d+(?:\.\d+)?%|\d+\s+percent)\b/gi, (match) => {
+            const placeholder = `__RATIO_${counter}__`;
+            protectedItems.set(placeholder, match);
+            counter++;
+            return placeholder;
+        });
+        
+        // Protect sequential instruction numbers
+        protectedText = protectedText.replace(/\b(?:step|stage|part|phase)\s+(\d+)/gi, (match) => {
+            const placeholder = `__SEQUENCE_${counter}__`;
+            protectedItems.set(placeholder, match);
+            counter++;
+            return placeholder;
+        });
+        
+        // Protect internal temperatures and scientific measurements
+        protectedText = protectedText.replace(/\b(\d+(?:\.\d+)?)\s*(?:°[FC]\s+internal|internal\s+temp|pH)\b/gi, (match) => {
+            const placeholder = `__SCIENTIFIC_${counter}__`;
+            protectedItems.set(placeholder, match);
+            counter++;
+            return placeholder;
+        });
+        
+        
+        // Now scale remaining quantities (ingredient amounts, counts, but NOT times/temperatures/measurements)
+        const scaledText = protectedText.replace(/(\d+\s+\d+\/\d+|\d*\.?\d+\/\d+|\d*\.?\d+|[¼½¾⅓⅔])/g, qty => {
+            const decimal = parseFraction(qty.trim());
+            const scaled = decimal * scale;
+            const fraction = toFraction(scaled);
+            return fraction || (isNaN(scaled) ? qty : scaled.toFixed(2).replace(/\.00$/, ''));
+        });
+        
+        // Restore all protected items (use global replace for safety)
+        let finalText = scaledText;
+        protectedItems.forEach((original, placeholder) => {
+            finalText = finalText.replace(new RegExp(placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), original);
+        });
+        
+        return finalText;
     }
 
     // Convert decimal to simple fraction (e.g., 0.5 → "1/2")
@@ -336,23 +554,23 @@
     // US to Metric conversion
     function usToMetric(text) {
         return text
-            .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|[\\d\\/]+)\s*cup(?:s)?/gi, (match, qty) => {
+            .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|\d+\/\d+)\s*cup(?:s)?/gi, (match, qty) => {
                 const value = parseFraction(qty);
                 return Math.round(value * 240) + ' ml';
             })
-            .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|[\\d\\/]+)\s*(tablespoon|tbsp)/gi, (match, qty, unit) => {
+            .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|\d+\/\d+)\s*(tablespoon|tbsp)/gi, (match, qty, unit) => {
                 const value = parseFraction(qty);
                 return Math.round(value * 15) + ' ml';
             })
-            .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|[\\d\\/]+)\s*(teaspoon|tsp)/gi, (match, qty, unit) => {
+            .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|\d+\/\d+)\s*(teaspoon|tsp)/gi, (match, qty, unit) => {
                 const value = parseFraction(qty);
                 return Math.round(value * 5) + ' ml';
             })
-            .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|[\\d\\/]+)\s*(ounce|oz)/gi, (match, qty, unit) => {
+            .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|\d+\/\d+)\s*(ounce|oz)/gi, (match, qty, unit) => {
                 const value = parseFraction(qty);
                 return Math.round(value * 28) + ' grams';
             })
-            .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|[\\d\\/]+)\s*(pound|lb)/gi, (match, qty, unit) => {
+            .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|\d+\/\d+)\s*(pound|lb)/gi, (match, qty, unit) => {
                 const value = parseFraction(qty);
                 return Math.round(value * 454) + ' grams';
             })
@@ -365,7 +583,7 @@
     // Pre-generate scaled ingredients (US and Metric)
     const scaledIngredients = scales.map(scale => {
         const us = ingredients.map(ing => parseAndScaleIngredient(ing, scale));
-        const metric = us.map(usToMetric);
+        const metric = ingredients.map(ing => parseAndScaleIngredient(usToMetric(ing), scale));
         return { us, metric };
     });
 
@@ -383,52 +601,70 @@
     codeParts.push(`        border: 2px solid #000000;`);
     codeParts.push(`        box-shadow: 0 8px 20px rgba(0,0,0,0.15);`);
     codeParts.push(`    }`);
-
-    // Unit Toggle
-    codeParts.push(`    .unit-toggle-switch {`);
+    
+    // Control selectors - shared styling
+    codeParts.push(`    .control-selector {`);
     codeParts.push(`        display: flex;`);
-    codeParts.push(`        align-items: center;`);
     codeParts.push(`        justify-content: center;`);
-    codeParts.push(`        margin-bottom: 20px;`);
+    codeParts.push(`        gap: 5px;`);
+    codeParts.push(`        margin-bottom: 15px;`);
+    codeParts.push(`    }`);
+    codeParts.push(`    .control-selector input {`);
+    codeParts.push(`        display: none;`);
+    codeParts.push(`    }`);
+    codeParts.push(`    .control-selector label {`);
+    codeParts.push(`        padding: 8px 16px;`);
+    codeParts.push(`        border: 2px solid #ccc;`);
+    codeParts.push(`        border-radius: 5px;`);
+    codeParts.push(`        cursor: pointer;`);
+    codeParts.push(`        font-weight: 500;`);
     codeParts.push(`        font-size: 0.9rem;`);
-    codeParts.push(`        gap: 10px;`);
+    codeParts.push(`        transition: all 0.2s;`);
     codeParts.push(`    }`);
-    codeParts.push(`    .switch {`);
-    codeParts.push(`        position: relative;`);
-    codeParts.push(`        width: 50px;`);
-    codeParts.push(`        height: 24px;`);
-    codeParts.push(`        background: #ccc;`);
-    codeParts.push(`        border-radius: 12px;`);
-    codeParts.push(`        transition: background 0.3s;`);
+    codeParts.push(`    .control-selector label:hover {`);
+    codeParts.push(`        background: #f0f0f0;`);
     codeParts.push(`    }`);
-    codeParts.push(`    .switch::before {`);
-    codeParts.push(`        content: '';`);
-    codeParts.push(`        position: absolute;`);
-    codeParts.push(`        width: 20px;`);
-    codeParts.push(`        height: 20px;`);
-    codeParts.push(`        border-radius: 50%;`);
-    codeParts.push(`        top: 2px;`);
-    codeParts.push(`        left: 2px;`);
-    codeParts.push(`        background: white;`);
-    codeParts.push(`        transition: transform 0.3s;`);
-    codeParts.push(`    }`);
-    codeParts.push(`    #${checkboxId}:checked ~ .recipe-container .switch {`);
+    
+    // Unit selector
+    codeParts.push(`    #${scaleGroupId}-us-ctrl:checked ~ .unit-selector label[for='${scaleGroupId}-us-ctrl'] {`);
     codeParts.push(`        background: #000;`);
+    codeParts.push(`        color: white;`);
+    codeParts.push(`        border-color: #000;`);
     codeParts.push(`    }`);
-    codeParts.push(`    #${checkboxId}:checked ~ .recipe-container .switch::before {`);
-    codeParts.push(`        transform: translateX(26px);`);
+    codeParts.push(`    #${scaleGroupId}-metric-ctrl:checked ~ .unit-selector label[for='${scaleGroupId}-metric-ctrl'] {`);
+    codeParts.push(`        background: #000;`);
+    codeParts.push(`        color: white;`);
+    codeParts.push(`        border-color: #000;`);
     codeParts.push(`    }`);
     codeParts.push(`    .us-unit, .metric-unit {`);
+    codeParts.push(`        display: none;`);
+    codeParts.push(`    }`);
+    codeParts.push(`    #${scaleGroupId}-us-ctrl:checked ~ .recipe-container .us-unit {`);
     codeParts.push(`        display: inline;`);
     codeParts.push(`    }`);
-    codeParts.push(`    #${checkboxId} {`);
+    codeParts.push(`    #${scaleGroupId}-metric-ctrl:checked ~ .recipe-container .metric-unit {`);
+    codeParts.push(`        display: inline;`);
+    codeParts.push(`    }`);
+    
+    // Temperature selector
+    codeParts.push(`    #${scaleGroupId}-fahr-ctrl:checked ~ .temp-selector label[for='${scaleGroupId}-fahr-ctrl'] {`);
+    codeParts.push(`        background: #000;`);
+    codeParts.push(`        color: white;`);
+    codeParts.push(`        border-color: #000;`);
+    codeParts.push(`    }`);
+    codeParts.push(`    #${scaleGroupId}-cels-ctrl:checked ~ .temp-selector label[for='${scaleGroupId}-cels-ctrl'] {`);
+    codeParts.push(`        background: #000;`);
+    codeParts.push(`        color: white;`);
+    codeParts.push(`        border-color: #000;`);
+    codeParts.push(`    }`);
+    codeParts.push(`    .fahrenheit-temp, .celsius-temp {`);
     codeParts.push(`        display: none;`);
     codeParts.push(`    }`);
-    codeParts.push(`    #${checkboxId}:checked ~ .recipe-container .us-unit {`);
-    codeParts.push(`        display: none;`);
+    codeParts.push(`    #${scaleGroupId}-fahr-ctrl:checked ~ .recipe-container .fahrenheit-temp {`);
+    codeParts.push(`        display: inline;`);
     codeParts.push(`    }`);
-    codeParts.push(`    #${checkboxId}:not(:checked) ~ .recipe-container .metric-unit {`);
-    codeParts.push(`        display: none;`);
+    codeParts.push(`    #${scaleGroupId}-cels-ctrl:checked ~ .recipe-container .celsius-temp {`);
+    codeParts.push(`        display: inline;`);
     codeParts.push(`    }`);
 
     // Scale Selector
@@ -458,7 +694,7 @@
     codeParts.push(`    }`);
 
     scales.forEach((_, i) => {
-        codeParts.push(`    #${scaleGroupId}-s${i}:checked ~ .recipe-container .scale-selector label[for='${scaleGroupId}-s${i}'] {`);
+        codeParts.push(`    #${scaleGroupId}-s${i}-ctrl:checked ~ .scale-selector label[for='${scaleGroupId}-s${i}-ctrl'] {`);
         codeParts.push(`        background: #000;`);
         codeParts.push(`        color: white;`);
         codeParts.push(`        border-color: #000;`);
@@ -466,37 +702,34 @@
     });
 
     scales.forEach((_, i) => {
-        codeParts.push(`    #${scaleGroupId}-s${i}:checked ~ .recipe-container .scale-content:not(.scale-${i}),`);
-        codeParts.push(`    #${scaleGroupId}-s${i}:checked ~ .recipe-container .scale-${i} {`);
-        codeParts.push(`        display: block;`);
-        codeParts.push(`    }`);
-        codeParts.push(`    #${scaleGroupId}-s${i}:checked ~ .recipe-container .scale-content {`);
-        codeParts.push(`        display: none;`);
+        // Direct approach: each radio shows only its corresponding scale
+        codeParts.push(`    #${scaleGroupId}-s${i}-ctrl:checked ~ .recipe-container .scale-${i} {`);
+        codeParts.push(`        display: block !important;`);
         codeParts.push(`    }`);
     });
 
     codeParts.push(`    .scale-content {`);
     codeParts.push(`        display: none;`);
     codeParts.push(`    }`);
-    codeParts.push(`    .scale-0 { display: block; }`);
     codeParts.push(`</style>`);
 
-    // Hidden inputs
-    codeParts.push(`<input type="checkbox" id="${checkboxId}" style="display:none;">`);
-    scales.forEach((_, i) => {
-        codeParts.push(`<input type="radio" name="${scaleGroupId}" id="${scaleGroupId}-s${i}" class="scale-radio" ${i === 0 ? 'checked' : ''}>`);
-    });
+    // Unit toggle inputs
+    codeParts.push(`<input type="radio" name="${scaleGroupId}-unit-ctrl" id="${scaleGroupId}-us-ctrl" style="display:none;" checked>`);
+    codeParts.push(`<input type="radio" name="${scaleGroupId}-unit-ctrl" id="${scaleGroupId}-metric-ctrl" style="display:none;">`);
+    
+    // Temperature toggle inputs
+    codeParts.push(`<input type="radio" name="${scaleGroupId}-temp-ctrl" id="${scaleGroupId}-fahr-ctrl" style="display:none;" checked>`);
+    codeParts.push(`<input type="radio" name="${scaleGroupId}-temp-ctrl" id="${scaleGroupId}-cels-ctrl" style="display:none;">`);
+    
 
-    // UI
-    codeParts.push(`<label for="${checkboxId}" class="unit-toggle-switch">`);
-    codeParts.push(`    <span>US Units</span>`);
-    codeParts.push(`    <div class="switch"></div>`);
-    codeParts.push(`    <span>Metric Units</span>`);
-    codeParts.push(`</label>`);
+    // Place radio inputs FIRST so they can control both scale-selector and recipe-container
+    scales.forEach((_, i) => {
+        codeParts.push(`<input type="radio" name="${scaleGroupId}-ctrl" id="${scaleGroupId}-s${i}-ctrl" class="scale-radio" style="display:none;" ${i === 0 ? 'checked' : ''}>`);
+    });
 
     codeParts.push(`<div class="scale-selector">`);
     scaleLabels.forEach((label, i) => {
-        codeParts.push(`    <label for="${scaleGroupId}-s${i}">${label}</label>`);
+        codeParts.push(`    <label for="${scaleGroupId}-s${i}-ctrl">${label}</label>`);
     });
     codeParts.push(`</div>`);
 
@@ -506,7 +739,7 @@
 
     // Scaled Times and Servings
     scales.forEach((_, i) => {
-        codeParts.push(`  <div class="scale-content scale-${i}" style="display: ${i === 0 ? 'block' : 'none'};">`);
+        codeParts.push(`  <div class="scale-content scale-${i}">`);
         codeParts.push(`    <div style="display: flex; justify-content: space-around; flex-wrap: wrap; margin-bottom: 35px; border-top: 2px solid #000000; border-bottom: 2px solid #000000; padding: 20px 0;">`);
         codeParts.push(`      <div style="text-align: center; padding: 18px;">`);
         codeParts.push(`        <div style="font-weight: 600; color: #000000; font-size: 1rem; letter-spacing: 1px;">PREP TIME</div>`);
@@ -526,10 +759,16 @@
 
     // Ingredients & Instructions
     scales.forEach((_, i) => {
-        codeParts.push(`  <div class="scale-content scale-${i}" style="display: ${i === 0 ? 'block' : 'none'};">`);
+        codeParts.push(`  <div class="scale-content scale-${i}">`);
         codeParts.push(`    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 30px;">`);
         codeParts.push(`      <div class="ingredients-section">`);
-        codeParts.push(`        <h2 style="color: #000000; border-bottom: 3px solid #000000; padding-bottom: 8px; margin-bottom: 20px; font-size: 1.8rem; font-weight: 600;">Ingredients</h2>`);
+        codeParts.push(`        <h2 style="color: #000000; border-bottom: 3px solid #000000; padding-bottom: 8px; margin-bottom: 15px; font-size: 1.8rem; font-weight: 600;">Ingredients</h2>`);
+        
+        // Unit selector UI near ingredients
+        codeParts.push(`        <div class="control-selector unit-selector" style="margin-bottom: 20px;">`);
+        codeParts.push(`            <label for="${scaleGroupId}-us-ctrl">US Units</label>`);
+        codeParts.push(`            <label for="${scaleGroupId}-metric-ctrl">Metric Units</label>`);
+        codeParts.push(`        </div>`);
         codeParts.push(`        <ul class="ingredients-list" style="list-style-type: none; padding-left: 0;">`);
 
         scaledIngredients[i].us.forEach((us, idx) => {
@@ -544,14 +783,38 @@
         codeParts.push(`        </ul>`);
         codeParts.push(`      </div>`);
         codeParts.push(`      <div class="instructions-section">`);
-        codeParts.push(`        <h2 style="color: #000000; border-bottom: 3px solid #000000; padding-bottom: 8px; margin-bottom: 20px; font-size: 1.8rem; font-weight: 600;">Instructions</h2>`);
+        codeParts.push(`        <h2 style="color: #000000; border-bottom: 3px solid #000000; padding-bottom: 8px; margin-bottom: 15px; font-size: 1.8rem; font-weight: 600;">Instructions</h2>`);
+        
+        // Temperature selector UI near instructions
+        codeParts.push(`        <div class="control-selector temp-selector" style="margin-bottom: 20px;">`);
+        codeParts.push(`            <label for="${scaleGroupId}-fahr-ctrl">Fahrenheit</label>`);
+        codeParts.push(`            <label for="${scaleGroupId}-cels-ctrl">Celsius</label>`);
+        codeParts.push(`        </div>`);
         codeParts.push(`        <ol class="instructions-list" style="padding-left: 25px; font-size: 1.05rem; color: #333333;">`);
 
         instructions.forEach((inst, idx) => {
             const scaledInst = parseAndScaleIngredient(inst, scales[i]);
+            const metricInst = usToMetric(scaledInst);
+            
+            // Create comprehensive temperature conversion function
+            function convertToCelsius(text) {
+                return text.replace(/(\d+)°F/g, (match, f) => {
+                    const c = Math.round((parseFloat(f) - 32) * 5 / 9 / 5) * 5;
+                    return c + '°C';
+                });
+            }
+            
+            // Create all 4 combinations
+            const usFahrInst = scaledInst;
+            const usCelsInst = convertToCelsius(scaledInst);
+            const metricFahrInst = metricInst;
+            const metricCelsInst = convertToCelsius(metricInst);
+            
             codeParts.push(`          <li style="margin-bottom: 18px; padding-left: 8px; line-height: 1.6;">`);
-            codeParts.push(`            <span class="us-unit">${escapeHtml(scaledInst)}</span>`);
-            codeParts.push(`            <span class="metric-unit">${escapeHtml(usToMetric(scaledInst))}</span>`);
+            codeParts.push(`            <span class="us-unit fahrenheit-temp">${escapeHtml(usFahrInst)}</span>`);
+            codeParts.push(`            <span class="us-unit celsius-temp">${escapeHtml(usCelsInst)}</span>`);
+            codeParts.push(`            <span class="metric-unit fahrenheit-temp">${escapeHtml(metricFahrInst)}</span>`);
+            codeParts.push(`            <span class="metric-unit celsius-temp">${escapeHtml(metricCelsInst)}</span>`);
             codeParts.push(`          </li>`);
         });
 
