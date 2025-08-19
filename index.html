@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Squarespace Recipe Generator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- Removed external CSS link to keep everything self-contained -->
     <style>
         body {
@@ -292,6 +293,7 @@
                 <button class="btn btn-generate" onclick="generateCode()">Generate Code</button>
                 <button class="btn btn-copy" onclick="copyCode()">Copy to Clipboard</button>
                 <button class="btn" style="background: #333; color: white;" onclick="loadTestData()">Load Test Data</button>
+                <button class="btn" style="background: #444; color: white;" onclick="downloadPDF()"><i class="fas fa-download"></i> Download PDF</button>
             </div>
         </div>
     </div>
@@ -965,6 +967,143 @@
 
         // Auto-generate code after loading test data
         setTimeout(generateCode, 100);
+    }
+
+    function downloadPDF() {
+        // Get current recipe data
+        const title = document.getElementById('recipe-title').value || 'Recipe';
+        const description = document.getElementById('recipe-description').value || '';
+        const prepTime = parseInt(document.getElementById('prep-time').value) || 0;
+        const cookTime = parseInt(document.getElementById('cook-time').value) || 0;
+        const servings = parseInt(document.getElementById('servings').value) || 0;
+
+        const ingredients = Array.from(document.querySelectorAll('#ingredients-list input'))
+            .map(input => input.value.trim())
+            .filter(value => value);
+
+        const instructions = Array.from(document.querySelectorAll('#instructions-list input'))
+            .map(input => input.value.trim())
+            .filter(value => value);
+
+        const tips = Array.from(document.querySelectorAll('#tips-list input'))
+            .map(input => input.value.trim())
+            .filter(value => value);
+
+        // Check if we have enough data
+        if (!title || ingredients.length === 0 || instructions.length === 0) {
+            alert('Please fill in at least the recipe title, some ingredients, and instructions before downloading PDF.');
+            return;
+        }
+
+        // Create PDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        let yPosition = 20;
+        const pageWidth = doc.internal.pageSize.width;
+        const margin = 20;
+        const lineHeight = 7;
+        
+        // Title
+        doc.setFontSize(20);
+        doc.setFont(undefined, 'bold');
+        doc.text(title, margin, yPosition);
+        yPosition += 15;
+        
+        // Description
+        if (description) {
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            const descLines = doc.splitTextToSize(description, pageWidth - 2 * margin);
+            doc.text(descLines, margin, yPosition);
+            yPosition += descLines.length * lineHeight + 10;
+        }
+        
+        // Recipe info (prep, cook, servings)
+        doc.setFontSize(12);
+        doc.setFont(undefined, 'bold');
+        let infoText = '';
+        if (prepTime > 0) infoText += `Prep: ${prepTime} mins  `;
+        if (cookTime > 0) infoText += `Cook: ${cookTime} mins  `;
+        if (servings > 0) infoText += `Servings: ${servings}`;
+        
+        if (infoText) {
+            doc.text(infoText, margin, yPosition);
+            yPosition += 15;
+        }
+        
+        // Ingredients section
+        doc.setFontSize(16);
+        doc.setFont(undefined, 'bold');
+        doc.text('Ingredients', margin, yPosition);
+        yPosition += 10;
+        
+        doc.setFontSize(11);
+        doc.setFont(undefined, 'normal');
+        ingredients.forEach(ingredient => {
+            // Check if we need a new page
+            if (yPosition > doc.internal.pageSize.height - 30) {
+                doc.addPage();
+                yPosition = 20;
+            }
+            doc.text(`• ${ingredient}`, margin + 5, yPosition);
+            yPosition += lineHeight;
+        });
+        yPosition += 10;
+        
+        // Instructions section
+        doc.setFontSize(16);
+        doc.setFont(undefined, 'bold');
+        doc.text('Instructions', margin, yPosition);
+        yPosition += 10;
+        
+        doc.setFontSize(11);
+        doc.setFont(undefined, 'normal');
+        instructions.forEach((instruction, index) => {
+            // Check if we need a new page
+            if (yPosition > doc.internal.pageSize.height - 40) {
+                doc.addPage();
+                yPosition = 20;
+            }
+            
+            const instructionLines = doc.splitTextToSize(`${index + 1}. ${instruction}`, pageWidth - 2 * margin - 10);
+            doc.text(instructionLines, margin + 5, yPosition);
+            yPosition += instructionLines.length * lineHeight + 3;
+        });
+        
+        // Tips section (if any)
+        if (tips.length > 0) {
+            yPosition += 10;
+            
+            // Check if we need a new page
+            if (yPosition > doc.internal.pageSize.height - 30) {
+                doc.addPage();
+                yPosition = 20;
+            }
+            
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('Chef\'s Tips', margin, yPosition);
+            yPosition += 10;
+            
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            tips.forEach(tip => {
+                // Check if we need a new page
+                if (yPosition > doc.internal.pageSize.height - 30) {
+                    doc.addPage();
+                    yPosition = 20;
+                }
+                
+                const tipLines = doc.splitTextToSize(`• ${tip}`, pageWidth - 2 * margin - 10);
+                doc.text(tipLines, margin + 5, yPosition);
+                yPosition += tipLines.length * lineHeight + 3;
+            });
+        }
+        
+        // Download the PDF
+        const filename = title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '_recipe.pdf';
+        doc.save(filename);
     }
 
     // Generate code on load
