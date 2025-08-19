@@ -291,6 +291,7 @@
             <div class="actions">
                 <button class="btn btn-generate" onclick="generateCode()">Generate Code</button>
                 <button class="btn btn-copy" onclick="copyCode()">Copy to Clipboard</button>
+                <button class="btn" style="background: #333; color: white;" onclick="loadTestData()">Load Test Data</button>
             </div>
         </div>
     </div>
@@ -366,7 +367,7 @@
                 }
             })
             .replace(/(\d+)°C/g, (match, c) => {
-                const f = Math.round((parseFloat(c) * 9 / 5 + 32) / 5) * 5;
+                const f = Math.round(parseFloat(c) * 9 / 5 + 32);
                 return f + '°F';
             });
     }
@@ -574,9 +575,14 @@
                 const value = parseFraction(qty);
                 return Math.round(value * 454) + ' grams';
             })
+            // Handle "375°F (190°C)" format - extract just the Celsius part
+            .replace(/(\d+)°F\s*\((\d+)°C\)/g, (match, f, c) => {
+                return c + '°C';
+            })
+            // Handle standalone "375°F" format
             .replace(/(\d+)°F/g, (match, f) => {
-                const c = (parseFloat(f) - 32) * 5 / 9;
-                return Math.round(c / 5) * 5 + '°C';
+                const c = Math.round((parseFloat(f) - 32) * 5 / 9);
+                return c + '°C';
             });
     }
 
@@ -625,46 +631,54 @@
     codeParts.push(`        background: #f0f0f0;`);
     codeParts.push(`    }`);
     
-    // Unit selector
-    codeParts.push(`    #${scaleGroupId}-us-ctrl:checked ~ .unit-selector label[for='${scaleGroupId}-us-ctrl'] {`);
+    // Unit selector - fixed selectors
+    codeParts.push(`    #${scaleGroupId}-us-ctrl:checked ~ * .unit-selector label[for='${scaleGroupId}-us-ctrl'] {`);
     codeParts.push(`        background: #000;`);
     codeParts.push(`        color: white;`);
     codeParts.push(`        border-color: #000;`);
     codeParts.push(`    }`);
-    codeParts.push(`    #${scaleGroupId}-metric-ctrl:checked ~ .unit-selector label[for='${scaleGroupId}-metric-ctrl'] {`);
+    codeParts.push(`    #${scaleGroupId}-metric-ctrl:checked ~ * .unit-selector label[for='${scaleGroupId}-metric-ctrl'] {`);
     codeParts.push(`        background: #000;`);
     codeParts.push(`        color: white;`);
     codeParts.push(`        border-color: #000;`);
     codeParts.push(`    }`);
+    // Hide all unit/temp combinations by default
     codeParts.push(`    .us-unit, .metric-unit {`);
     codeParts.push(`        display: none;`);
     codeParts.push(`    }`);
-    codeParts.push(`    #${scaleGroupId}-us-ctrl:checked ~ .recipe-container .us-unit {`);
+    
+    // Show specific combinations based on both unit and temperature selections
+    codeParts.push(`    #${scaleGroupId}-us-ctrl:checked ~ #${scaleGroupId}-fahr-ctrl:checked ~ * .us-unit.fahrenheit-temp {`);
     codeParts.push(`        display: inline;`);
     codeParts.push(`    }`);
-    codeParts.push(`    #${scaleGroupId}-metric-ctrl:checked ~ .recipe-container .metric-unit {`);
+    codeParts.push(`    #${scaleGroupId}-us-ctrl:checked ~ #${scaleGroupId}-cels-ctrl:checked ~ * .us-unit.celsius-temp {`);
+    codeParts.push(`        display: inline;`);
+    codeParts.push(`    }`);
+    codeParts.push(`    #${scaleGroupId}-metric-ctrl:checked ~ #${scaleGroupId}-fahr-ctrl:checked ~ * .metric-unit.fahrenheit-temp {`);
+    codeParts.push(`        display: inline;`);
+    codeParts.push(`    }`);
+    codeParts.push(`    #${scaleGroupId}-metric-ctrl:checked ~ #${scaleGroupId}-cels-ctrl:checked ~ * .metric-unit.celsius-temp {`);
     codeParts.push(`        display: inline;`);
     codeParts.push(`    }`);
     
-    // Temperature selector
-    codeParts.push(`    #${scaleGroupId}-fahr-ctrl:checked ~ .temp-selector label[for='${scaleGroupId}-fahr-ctrl'] {`);
+    // Handle ingredients (no temperature classes - just unit classes)
+    codeParts.push(`    #${scaleGroupId}-us-ctrl:checked ~ * .us-unit:not(.fahrenheit-temp):not(.celsius-temp) {`);
+    codeParts.push(`        display: inline;`);
+    codeParts.push(`    }`);
+    codeParts.push(`    #${scaleGroupId}-metric-ctrl:checked ~ * .metric-unit:not(.fahrenheit-temp):not(.celsius-temp) {`);
+    codeParts.push(`        display: inline;`);
+    codeParts.push(`    }`);
+    
+    // Temperature selector button styling
+    codeParts.push(`    #${scaleGroupId}-fahr-ctrl:checked ~ * .temp-selector label[for='${scaleGroupId}-fahr-ctrl'] {`);
     codeParts.push(`        background: #000;`);
     codeParts.push(`        color: white;`);
     codeParts.push(`        border-color: #000;`);
     codeParts.push(`    }`);
-    codeParts.push(`    #${scaleGroupId}-cels-ctrl:checked ~ .temp-selector label[for='${scaleGroupId}-cels-ctrl'] {`);
+    codeParts.push(`    #${scaleGroupId}-cels-ctrl:checked ~ * .temp-selector label[for='${scaleGroupId}-cels-ctrl'] {`);
     codeParts.push(`        background: #000;`);
     codeParts.push(`        color: white;`);
     codeParts.push(`        border-color: #000;`);
-    codeParts.push(`    }`);
-    codeParts.push(`    .fahrenheit-temp, .celsius-temp {`);
-    codeParts.push(`        display: none;`);
-    codeParts.push(`    }`);
-    codeParts.push(`    #${scaleGroupId}-fahr-ctrl:checked ~ .recipe-container .fahrenheit-temp {`);
-    codeParts.push(`        display: inline;`);
-    codeParts.push(`    }`);
-    codeParts.push(`    #${scaleGroupId}-cels-ctrl:checked ~ .recipe-container .celsius-temp {`);
-    codeParts.push(`        display: inline;`);
     codeParts.push(`    }`);
 
     // Scale Selector
@@ -760,7 +774,9 @@
     // Ingredients & Instructions
     scales.forEach((_, i) => {
         codeParts.push(`  <div class="scale-content scale-${i}">`);
-        codeParts.push(`    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 30px;">`);
+        
+        // Ingredients Section (First Row)
+        codeParts.push(`    <div style="margin-bottom: 40px;">`);
         codeParts.push(`      <div class="ingredients-section">`);
         codeParts.push(`        <h2 style="color: #000000; border-bottom: 3px solid #000000; padding-bottom: 8px; margin-bottom: 15px; font-size: 1.8rem; font-weight: 600;">Ingredients</h2>`);
         
@@ -782,6 +798,10 @@
 
         codeParts.push(`        </ul>`);
         codeParts.push(`      </div>`);
+        codeParts.push(`    </div>`);
+        
+        // Instructions Section (Second Row)
+        codeParts.push(`    <div style="margin-bottom: 30px;">`);
         codeParts.push(`      <div class="instructions-section">`);
         codeParts.push(`        <h2 style="color: #000000; border-bottom: 3px solid #000000; padding-bottom: 8px; margin-bottom: 15px; font-size: 1.8rem; font-weight: 600;">Instructions</h2>`);
         
@@ -793,15 +813,21 @@
         codeParts.push(`        <ol class="instructions-list" style="padding-left: 25px; font-size: 1.05rem; color: #333333;">`);
 
         instructions.forEach((inst, idx) => {
-            const scaledInst = parseAndScaleIngredient(inst, scales[i]);
+            const scaledInst = inst; // Instructions don't need scaling for quantities
             const metricInst = usToMetric(scaledInst);
             
             // Create comprehensive temperature conversion function
             function convertToCelsius(text) {
-                return text.replace(/(\d+)°F/g, (match, f) => {
-                    const c = Math.round((parseFloat(f) - 32) * 5 / 9 / 5) * 5;
-                    return c + '°C';
-                });
+                // Handle "375°F (190°C)" format - extract just the Celsius part
+                return text
+                    .replace(/(\d+)°F\s*\((\d+)°C\)/g, (match, f, c) => {
+                        return c + '°C';
+                    })
+                    // Handle standalone "375°F" format
+                    .replace(/(\d+)°F/g, (match, f) => {
+                        const c = Math.round((parseFloat(f) - 32) * 5 / 9);
+                        return c + '°C';
+                    });
             }
             
             // Create all 4 combinations
@@ -873,6 +899,72 @@
         setTimeout(() => {
             notification.classList.remove('show');
         }, 3000);
+    }
+
+    function loadTestData() {
+        // Basic recipe info
+        document.getElementById('recipe-title').value = 'Classic Chocolate Chip Cookies';
+        document.getElementById('recipe-description').value = 'Perfect chewy cookies with crispy edges and gooey centers. A family favorite that never goes out of style.';
+        document.getElementById('prep-time').value = '15';
+        document.getElementById('cook-time').value = '12';
+        document.getElementById('servings').value = '24';
+
+        // Test ingredients with various measurements and fractions
+        const testIngredients = [
+            '2 1/4 cups all-purpose flour',
+            '1 tsp baking soda', 
+            '1/2 tsp salt',
+            '1 cup butter, softened',
+            '3/4 cup granulated sugar',
+            '3/4 cup brown sugar',
+            '2 large eggs',
+            '2 tsp vanilla extract',
+            '2 cups chocolate chips'
+        ];
+
+        // Test instructions with temperatures and times
+        const testInstructions = [
+            'Preheat oven to 375°F (190°C)',
+            'Mix flour, baking soda, and salt in a bowl',
+            'Cream butter and sugars for 3 minutes until fluffy',
+            'Beat in eggs and vanilla until combined',
+            'Gradually mix in flour mixture until just combined',
+            'Fold in chocolate chips',
+            'Drop rounded tablespoons onto ungreased baking sheets',
+            'Bake for 9-11 minutes until golden brown',
+            'Cool on baking sheet for 5 minutes before transferring'
+        ];
+
+        // Test tips
+        const testTips = [
+            'Use room temperature ingredients for best mixing',
+            'Don\'t overmix the dough to keep cookies tender',
+            'Chill dough for 30 minutes for thicker cookies',
+            'Store in airtight container for up to 1 week'
+        ];
+
+        // Clear existing items and populate with test data
+        const ingredientInputs = document.querySelectorAll('#ingredients-list input');
+        const instructionInputs = document.querySelectorAll('#instructions-list input');
+        const tipInputs = document.querySelectorAll('#tips-list input');
+
+        // Fill ingredients
+        ingredientInputs.forEach((input, i) => {
+            input.value = testIngredients[i] || '';
+        });
+
+        // Fill instructions
+        instructionInputs.forEach((input, i) => {
+            input.value = testInstructions[i] || '';
+        });
+
+        // Fill tips
+        tipInputs.forEach((input, i) => {
+            input.value = testTips[i] || '';
+        });
+
+        // Auto-generate code after loading test data
+        setTimeout(generateCode, 100);
     }
 
     // Generate code on load
