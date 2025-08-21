@@ -284,6 +284,26 @@
                 </li>
             </ul>
             <button class="btn btn-add" onclick="addItem('tips')">Add Tip</button>
+            <h2>Tools & Equipment</h2>
+            <ul id="equipment-list">
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Large mixing bowl">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Electric mixer">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., 9-inch baking pan">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+                <li class="list-item">
+                    <input type="text" placeholder="e.g., Wire cooling rack">
+                    <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
+                </li>
+            </ul>
+            <button class="btn btn-add" onclick="addItem('equipment')">Add Equipment</button>
         </div>
         <div class="preview-section">
             <h2>Generated Code</h2>
@@ -311,6 +331,7 @@
         let placeholder = '';
         if (type === 'instructions') placeholder = 'e.g., Mix ingredients together';
         else if (type === 'tips') placeholder = 'e.g., Pro tip for better results';
+        else if (type === 'equipment') placeholder = 'e.g., Kitchen tool or equipment needed';
         newItem.innerHTML = `
             <input type="text" placeholder="${placeholder}">
             <button class="btn btn-remove" onclick="removeItem(this)"><i class="fas fa-times"></i></button>
@@ -393,6 +414,10 @@
         .map(input => input.value.trim())
         .filter(value => value);
 
+    const equipment = Array.from(document.querySelectorAll('#equipment-list input'))
+        .map(input => input.value.trim())
+        .filter(value => value);
+
     const recipeId = 'recipe-' + Date.now();
     const scaleGroupId = `scale-group-${Date.now()}`;
 
@@ -401,9 +426,9 @@
     const scaleLabels = ['x1', 'x1.5', 'x2', 'x3', 'x4'];
 
     // Pre-calculate scaled times and servings
-    // Note: Cook time stays the same, prep time scales moderately, servings scale linearly
+    // Note: Both prep and cook times stay constant - only servings scale
     const scaledTimes = scales.map(scale => ({
-        prep: scale === 1 ? prepTime : Math.round(prepTime + (prepTime * 0.3 * (scale - 1))), // 30% increase per scale
+        prep: prepTime, // Prep time stays constant regardless of batch size
         cook: cookTime, // Cook time doesn't change with servings
         servings: Math.round(servings * scale)
     }));
@@ -576,6 +601,20 @@
             .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|\d+\/\d+)\s*(pound|lb)/gi, (match, qty, unit) => {
                 const value = parseFraction(qty);
                 return Math.round(value * 454) + ' grams';
+            })
+            // Handle dimensional measurements like "14x10 inches" or "9-inch"
+            .replace(/(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)\s*inch(?:es)?/gi, (match, w, h) => {
+                const widthCm = Math.round(parseFloat(w) * 2.54);
+                const heightCm = Math.round(parseFloat(h) * 2.54);
+                return `${widthCm}x${heightCm} cm`;
+            })
+            .replace(/(\d+(?:\.\d+)?)-inch/gi, (match, size) => {
+                const cm = Math.round(parseFloat(size) * 2.54);
+                return `${cm} cm`;
+            })
+            .replace(/(\d+(?:\.\d+)?)\s*inch(?:es)?/gi, (match, size) => {
+                const cm = Math.round(parseFloat(size) * 2.54);
+                return `${cm} cm`;
             })
             // Handle "375°F (190°C)" format - extract just the Celsius part
             .replace(/(\d+)°F\s*\((\d+)°C\)/g, (match, f, c) => {
@@ -773,6 +812,22 @@
         codeParts.push(`  </div>`);
     });
 
+    // Equipment Section (if any)
+    if (equipment.length > 0) {
+        codeParts.push(`  <div style="margin-bottom: 30px; border-top: 2px solid #000000; padding-top: 25px;">`);
+        codeParts.push(`    <h2 style="color: #000000; border-bottom: 3px solid #000000; padding-bottom: 8px; margin-bottom: 20px; font-size: 1.8rem; font-weight: 600;">Tools & Equipment</h2>`);
+        codeParts.push(`    <ul style="list-style-type: none; padding-left: 0; font-size: 1.05rem; color: #333333; display: flex; flex-wrap: wrap; gap: 15px;">`);
+
+        equipment.forEach(item => {
+            codeParts.push(`      <li style="background: #f8f8f8; border: 2px solid #ddd; border-radius: 8px; padding: 10px 15px; display: inline-block; font-weight: 500;">`);
+            codeParts.push(`        <span style="color: #000000; font-size: 1.1rem; margin-right: 8px;">🔧</span>${escapeHtml(item)}`);
+            codeParts.push(`      </li>`);
+        });
+
+        codeParts.push(`    </ul>`);
+        codeParts.push(`  </div>`);
+    }
+
     // Ingredients & Instructions
     scales.forEach((_, i) => {
         codeParts.push(`  <div class="scale-content scale-${i}">`);
@@ -904,51 +959,84 @@
     }
 
     function loadTestData() {
-        // Basic recipe info
-        document.getElementById('recipe-title').value = 'Classic Chocolate Chip Cookies';
-        document.getElementById('recipe-description').value = 'Perfect chewy cookies with crispy edges and gooey centers. A family favorite that never goes out of style.';
-        document.getElementById('prep-time').value = '15';
-        document.getElementById('cook-time').value = '12';
-        document.getElementById('servings').value = '24';
+        // Basic recipe info - more comprehensive test case
+        document.getElementById('recipe-title').value = 'Perfect Beef Wellington';
+        document.getElementById('recipe-description').value = 'An elegant centerpiece featuring tender beef tenderloin wrapped in savory mushroom duxelles and flaky puff pastry. This restaurant-quality dish is perfect for special occasions and will impress any dinner guest.';
+        document.getElementById('prep-time').value = '45';
+        document.getElementById('cook-time').value = '35';
+        document.getElementById('servings').value = '6';
 
-        // Test ingredients with various measurements and fractions
+        // Test ingredients with complex measurements, fractions, and various units
         const testIngredients = [
-            '2 1/4 cups all-purpose flour',
-            '1 tsp baking soda', 
-            '1/2 tsp salt',
-            '1 cup butter, softened',
-            '3/4 cup granulated sugar',
-            '3/4 cup brown sugar',
-            '2 large eggs',
-            '2 tsp vanilla extract',
-            '2 cups chocolate chips'
+            '2 1/2 lb beef tenderloin, trimmed',
+            '1 lb puff pastry, thawed',
+            '1/4 cup Dijon mustard',
+            '8 oz mushrooms, finely chopped',
+            '4 oz pâté de foie gras (optional)',
+            '6 thin slices prosciutto',
+            '2 egg yolks, beaten',
+            '2 tbsp olive oil',
+            '1/2 cup dry white wine',
+            '2 shallots, minced',
+            '3 cloves garlic, minced',
+            '1/4 cup fresh herbs (thyme, rosemary)',
+            '1 tsp kosher salt',
+            '1/2 tsp black pepper',
+            '2 tbsp butter'
         ];
 
-        // Test instructions with temperatures and times
+        // Test instructions with complex temperatures, times, and measurements
         const testInstructions = [
-            'Preheat oven to 375°F (190°C)',
-            'Mix flour, baking soda, and salt in a bowl',
-            'Cream butter and sugars for 3 minutes until fluffy',
-            'Beat in eggs and vanilla until combined',
-            'Gradually mix in flour mixture until just combined',
-            'Fold in chocolate chips',
-            'Drop rounded tablespoons onto ungreased baking sheets',
-            'Bake for 9-11 minutes until golden brown',
-            'Cool on baking sheet for 5 minutes before transferring'
+            'Preheat oven to 425°F (220°C) and season beef with salt and pepper',
+            'Heat olive oil in large skillet over high heat',
+            'Sear beef on all sides until golden brown, about 8-10 minutes total',
+            'Remove from heat and brush with Dijon mustard, let cool completely',
+            'Sauté mushrooms, shallots, and garlic for 12-15 minutes until moisture evaporates',
+            'Add wine and herbs, cook 3-4 minutes until wine reduces',
+            'Season mushroom mixture and cool to room temperature',
+            'Lay plastic wrap on work surface, arrange prosciutto slices overlapping',
+            'Spread pâté (if using) and mushroom mixture over prosciutto',
+            'Place beef at one end and roll tightly using plastic wrap',
+            'Refrigerate wrapped beef for 25-30 minutes',
+            'Roll out puff pastry on floured surface to 14x10 inches',
+            'Remove plastic from beef, place on pastry, brush edges with egg wash',
+            'Roll pastry around beef, sealing seam with egg wash',
+            'Place seam-side down on parchment-lined baking sheet',
+            'Brush entire surface with egg wash and score decorative pattern',
+            'Bake for 25-30 minutes until pastry is golden and internal temp reaches 125°F (52°C)',
+            'Rest for 10-15 minutes before slicing with sharp knife'
         ];
 
-        // Test tips
+        // Test tips with more detailed advice
         const testTips = [
-            'Use room temperature ingredients for best mixing',
-            'Don\'t overmix the dough to keep cookies tender',
-            'Chill dough for 30 minutes for thicker cookies',
-            'Store in airtight container for up to 1 week'
+            'Use a meat thermometer for perfect doneness - 125°F for medium-rare',
+            'Let beef come to room temperature before cooking for even heating',
+            'Make sure mushroom duxelles is completely dry to prevent soggy pastry',
+            'Chill the wrapped beef to help pastry hold its shape during baking',
+            'Score the pastry lightly to prevent cracking and create an elegant presentation',
+            'Save leftover wine for the pan sauce - deglaze the searing pan with wine and butter'
+        ];
+
+        // Test equipment with more comprehensive tools
+        const testEquipment = [
+            'Large oven-safe skillet',
+            'Sharp chef\'s knife',
+            'Cutting board',
+            'Large mixing bowl',
+            'Plastic wrap',
+            'Rolling pin',
+            'Parchment paper',
+            'Baking sheet',
+            'Meat thermometer',
+            'Pastry brush',
+            'Fine-mesh sieve'
         ];
 
         // Clear existing items and populate with test data
         const ingredientInputs = document.querySelectorAll('#ingredients-list input');
         const instructionInputs = document.querySelectorAll('#instructions-list input');
         const tipInputs = document.querySelectorAll('#tips-list input');
+        const equipmentInputs = document.querySelectorAll('#equipment-list input');
 
         // Fill ingredients
         ingredientInputs.forEach((input, i) => {
@@ -963,6 +1051,11 @@
         // Fill tips
         tipInputs.forEach((input, i) => {
             input.value = testTips[i] || '';
+        });
+
+        // Fill equipment
+        equipmentInputs.forEach((input, i) => {
+            input.value = testEquipment[i] || '';
         });
 
         // Auto-generate code after loading test data
@@ -986,6 +1079,10 @@
             .filter(value => value);
 
         const tips = Array.from(document.querySelectorAll('#tips-list input'))
+            .map(input => input.value.trim())
+            .filter(value => value);
+
+        const equipment = Array.from(document.querySelectorAll('#equipment-list input'))
             .map(input => input.value.trim())
             .filter(value => value);
 
@@ -1030,6 +1127,27 @@
         if (infoText) {
             doc.text(infoText, margin, yPosition);
             yPosition += 15;
+        }
+        
+        // Equipment section (if any)
+        if (equipment.length > 0) {
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('Tools & Equipment', margin, yPosition);
+            yPosition += 10;
+            
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            equipment.forEach(item => {
+                // Check if we need a new page
+                if (yPosition > doc.internal.pageSize.height - 30) {
+                    doc.addPage();
+                    yPosition = 20;
+                }
+                doc.text(`• ${item}`, margin + 5, yPosition);
+                yPosition += lineHeight;
+            });
+            yPosition += 10;
         }
         
         // Ingredients section
