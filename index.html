@@ -586,14 +586,15 @@
                 const value = parseFraction(qty);
                 return Math.round(value * 240) + ' ml';
             })
-            .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|\d+\/\d+)\s*(tablespoon|tbsp)/gi, (match, qty, unit) => {
-                const value = parseFraction(qty);
-                return Math.round(value * 15) + ' ml';
-            })
-            .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|\d+\/\d+)\s*(teaspoon|tsp)/gi, (match, qty, unit) => {
-                const value = parseFraction(qty);
-                return Math.round(value * 5) + ' ml';
-            })
+            // Keep tablespoons and teaspoons as-is in metric mode
+            // .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|\d+\/\d+)\s*(tablespoon|tbsp)/gi, (match, qty, unit) => {
+            //     const value = parseFraction(qty);
+            //     return Math.round(value * 15) + ' ml';
+            // })
+            // .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|\d+\/\d+)\s*(teaspoon|tsp)/gi, (match, qty, unit) => {
+            //     const value = parseFraction(qty);
+            //     return Math.round(value * 5) + ' ml';
+            // })
             .replace(/(\d*\.?\d+|[¼½¾⅓⅔]|\d+\/\d+)\s*(ounce|oz)/gi, (match, qty, unit) => {
                 const value = parseFraction(qty);
                 return Math.round(value * 28) + ' grams';
@@ -820,7 +821,7 @@
 
         equipment.forEach(item => {
             codeParts.push(`      <li style="background: #f8f8f8; border: 2px solid #ddd; border-radius: 8px; padding: 10px 15px; display: inline-block; font-weight: 500;">`);
-            codeParts.push(`        <span style="color: #000000; font-size: 1.1rem; margin-right: 8px;">🔧</span>${escapeHtml(item)}`);
+            codeParts.push(`        <span style="color: #000000; font-size: 1.1rem; margin-right: 8px;">🥄</span>${escapeHtml(item)}`);
             codeParts.push(`      </li>`);
         });
 
